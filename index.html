@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title> Big Data d3 Assignment</title>
+    <script type="text/javascript" src="bower_components/jquery/dist/jQuery.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="bower_components/d3/d3.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.indigo-pink.min.css">
+    <script defer src="https://code.getmdl.io/1.1.3/material.min.js"></script>
+</head>
+<style>
+table {
+    border-collapse: collapse;
+}
+
+.card_1{
+    background: #fff;
+    padding:10px;
+    border-radius: 2px;
+    display: block;
+    margin: 1rem;
+    float:left;
+    position: relative;
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+.hovered{
+    background: #fff;
+    border-radius: 2px;
+    display: block;
+    float:left;
+    position: relative;
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+    font-size: 1;
+}
+.card{
+    clear:both;
+    background: #fff;
+    padding:10px;
+    border-radius: 2px;
+    display: block;
+    width:18%;
+    float: left;
+    margin: 1rem;
+    position: relative;
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+
+.plot{
+    height:400px;
+    margin-top: -150px;
+    float:left;
+    background: #fff;
+    display: block;
+    float: left;
+    position: relative;
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+
+
+
+</style>
+<body style="background-color:#eeeded">
+
+    <div>
+      <header class="mdl-layout__header">
+        <div class="mdl-layout__header-row">
+          <span class="mdl-layout-title">Big Data Analytics Homework</span>
+          <div class="mdl-layout-spacer"></div>
+      </div>
+  </div><br>
+  <div class="card_1">
+    <table class="mdl-data-table mdl-js-data-table mdl-shadow--0dp">
+        <thead>
+            <tr>
+                <th class="mdl-data-table__cell--non-numeric">Name</th>
+                <th>Net ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+              <td class="mdl-data-table__cell--non-numeric">Vaibhav Aggarwal</td>
+              <td>va771</td>
+          </tr>
+          <tr>
+              <td class="mdl-data-table__cell--non-numeric">Palak Arora</td>
+              <td>pa1154</td>
+          </tr>
+          <tr>
+              <td class="mdl-data-table__cell--non-numeric">Jitao Guo</td>
+              <td>jg4397</td>
+          </tr>
+      </tbody>
+  </table>
+</div>
+<div class="hovered" style="color:white;">
+    <h4 class="header"></h4>
+</div>
+<div class="card">
+    <div>
+        &nbsp;<label id="sel_x_label"> X-Axis </label>
+        <select id="sel-x">
+            <option value="" selected="true"> Select X Dimension </option>
+            <option value="mpg">mpg</option>
+            <option value="displacement">displacement</option>
+            <option value="cylinders">cylinders</option>
+            <option value="horsepower">horsepower</option>
+            <option value="weight">weight</option>
+            <option value="acceleration">acceleration</option>
+            <option value="model.year">model.year</option>
+        </select>
+    </div>
+    <div>
+        &nbsp;<label id="sel_y_label"> Y-Axis </label>
+        <select class="mdl-select__input" id="sel-y">
+            <option value="">  Select Y Dimension </option>
+            <option value="mpg">mpg</option>
+            <option value="displacement">displacement</option>
+            <option value="cylinders">cylinders</option>
+            <option value="horsepower">horsepower</option>
+            <option value="weight">weight</option>
+            <option value="acceleration">acceleration</option>
+            <option value="model.year">model.year</option>
+        </select>
+    </div>
+    <div>
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <label class="mdl-textfield__label">MPG Min Value </label>
+            <input class="mdl-textfield__input" type="number" pattern="[0-9]+([\.,][0-9]+)?" step="0.1" id="mpg_minimum"/>
+            <span class="mdl-textfield__error">Input allowed upto 1 decimal place</span>
+        </div><br>
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <label class="mdl-textfield__label">MPG Max Value </label>
+            <input class="mdl-textfield__input" type="number" pattern="[0-9]+([\.,][0-9]+)?" step="0.1" id="mpg_maximum"/>
+            <span class="mdl-textfield__error">Input allowed upto 1 decimal place</span>
+        </div>
+    </div>
+    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" id="button_query" >Query MPG </button>
+</div>
+<div class="plot">
+</div>
+</br>
+</div>
+</body>
+<script>
+$("#button_query").click(function(){
+    var margin = {top:50, right:50, bottom:50, left:50};
+    var width = 980 - margin.left-margin.right;
+    var height = 460-margin.top-margin.bottom;
+    var canvas = d3.select("div.plot").select("svg");
+    var flag = 0;
+    var x_values = window.fd[$("#sel-x").val()];
+    var y_values = window.fd[$("#sel-y").val()];
+    if(x_values==y_values){
+        alert("Alert: Same X and Y !!!!!");
+        return;
+    }
+    function get_val(st){
+        return Number($("#"+st).val());
+    }
+    var getMin = get_val("mpg_minimum");
+    var getMax = get_val("mpg_maximum");
+
+    if((getMin>getMax) || (getMin==getMax)){
+        alert("Alert: Min > Max or Min = Max!!!!!");
+        return;
+    }
+    var store_mpg_data = [];
+    for(i=0;i<x_values.length;i++){
+        if (parseFloat(fd["mpg"][i]) >= parseFloat(getMin) && parseFloat(fd["mpg"][i]) <= parseFloat(getMax)){
+            store_mpg_data.push([x_values[i],y_values[i],fd["name"][i]]);
+        }
+    }
+    if (canvas==""){
+        canvas = d3.select("div.plot").append("svg").attr("width",width+100).attr("height",height+100).attr("class","canvas")
+        flag = 1;
+    }
+    var x = d3.scale.linear().domain([d3.min(store_mpg_data,function(d){return d[0];}), d3.max(store_mpg_data,function(d){return d[0];})+10]).range([margin.left,width]);
+
+    var y = d3.scale.linear().domain([d3.min(store_mpg_data,function(d){return d[1];}), d3.max(store_mpg_data,function(d){return d[1];})+10]).range([height,margin.top]);
+
+    var horizontal = d3.svg.axis().scale(x).orient("bottom");
+    var vertical = d3.svg.axis().scale(y).orient("left");
+    if(flag==1){
+        canvas.append("g").attr("class","horizontal").style({'stroke': 'Black','fill':'none','stroke-width':'1px'}).style("text-anchor", "end").call(horizontal)
+        canvas.append("g").attr("class","vertical").style({'stroke': 'Black','fill':'none','stroke-width':'1px'}).style("text-anchor", "end").call(vertical);
+    }
+
+    canvas.select(".horizontal").attr("transform","translate(0,"+height+")").attr("class","horizontal").call(horizontal).append("text").attr("x", width-18).attr("y", -8).attr("class", "label").text($("#sel-x").val());
+
+    canvas.select(".vertical").attr("transform","translate("+margin.right+",0)").attr("class","vertical").call(vertical).append("text").attr("x",-margin.top).attr("y", 16).attr("class", "label").attr("transform", "rotate(-90)").text($("#sel-y").val());
+
+    canvas.selectAll(".horizontal").selectAll("text.label").text($("#sel-x").val());
+    canvas.selectAll(".vertical").selectAll("text.label").text($("#sel-y").val());
+
+    var circle_marks = canvas.selectAll("circle").data(store_mpg_data);
+    
+    circle_marks.enter().append("circle");
+
+    circle_marks.attr("r",2).style("fill", "#1565C0").attr("cx",function(d){return x(d[0]);}).attr("cy",function(d){return y(d[1]);}).on("mouseover",function(d){d3.select(".hovered").selectAll("h4").style("color","#1565C0").text(d[2]);
+});
+    circle_marks.exit().remove(); 
+});
+$(document).ready(function() {
+    fa = [];
+    fd = {};
+    fa[0]="name";
+    fa[1]="mpg";
+    fa[2]="displacement";
+    fa[3]="cylinders";
+    fa[4]="horsepower";
+    fa[5]="weight";
+    fa[6]="acceleration";
+    fa[7]="model.year";
+    d3.csv("car.csv", function(data){
+        var c = -1;
+        data.map(function(d){
+            c=c+1;
+            for (i=0;i<fa.length;i++){
+                if(window.fd[fa[i]]==null){
+                    window.fd[fa[i]] = [];
+                }
+                var data_val = Number(d[fa[i]]);
+                if (isNaN(data_val)){
+                    window.fd[fa[i]][c] = d[fa[i]];
+                }else{
+                    window.fd[fa[i]][c] = data_val;
+                }}});});});
+</script>
+</html>
