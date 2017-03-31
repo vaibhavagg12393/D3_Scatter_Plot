@@ -24,13 +24,6 @@ python -m SimpleHTTPServer
 http://localhost:8000/index.html<br>
 
 
-## Contributors
-
-Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NetID<br>
-Vaibhav Aggarwal&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;va771<br>
-Palak Arora&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pa1154<br>
-Jitao Guo&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;jg4397<br>
-
 ## License
 
 MIT
